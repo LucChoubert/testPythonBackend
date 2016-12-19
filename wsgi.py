@@ -12,9 +12,9 @@ def hello():
 @application.route("/listFilms")
 def listFilms():
 	#setup the connection
-	client = pymongo.MongoClient('mongodb://'+os.environ['MONGODB_USER']+':'+os.environ['MONGODB_PASSWORD']+'@'+os.environ['DATABASE_SERVICE_NAME']'/'os.environ['MONGODB_DATABASE'])
+	client = pymongo.MongoClient('mongodb://'+os.environ['MONGODB_USER']+':'+os.environ['MONGODB_PASSWORD']+'@'+os.environ['DATABASE_SERVICE_NAME']+'/'+os.environ['MONGODB_DATABASE'])
         #conn = pymongo.Connection()
-        db = client.sampledb
+        db = client[os.environ['MONGODB_DATABASE']]
  	result = db.collection_names()
 
         #query the DB for all the parkpoints
