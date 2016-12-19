@@ -1,10 +1,10 @@
-#
-# IMPORTANT: Put any additional includes below this line.  If placed above this
-# line, it's possible required libraries won't be in your searchable path
-#
+from flask import Flask
+app = Flask(__name__)
 
-from testPythonBackend import app as application
+@app.route("/")
+def hello():
+    return "Hello World!"
 
-#
-# Below for testing only
-#
+if __name__ == "__main__":
+    app.run()
+
