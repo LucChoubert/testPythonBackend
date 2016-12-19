@@ -12,8 +12,8 @@ def hello():
 @application.route("/listFilms")
 def listFilms():
 	#setup the connection
-	client = pymongo.MongoClient('mongodb://userCVV:ra8ViLosFtAy5L1t@mongodb/sampledb')
-        #conn = pymongo.Connection(os.environ['OPENSHIFT_NOSQL_DB_URL'])
+	client = pymongo.MongoClient('mongodb://'+os.environ['MONGODB_USER']+':'+os.environ['MONGODB_PASSWORD']+'@'+os.environ['DATABASE_SERVICE_NAME']'/'os.environ['MONGODB_DATABASE'])
+        #conn = pymongo.Connection()
         db = client.sampledb
  	result = db.collection_names()
 
