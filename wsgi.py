@@ -3,6 +3,8 @@ import pymongo
 import json
 from flask import Flask
 
+post = {"author": "Mike", "text": "My first blog post!"}
+
 application = Flask(__name__)
 
 @application.route("/")
@@ -25,6 +27,21 @@ def listFilms():
         #return str(json.dumps({'results':list(result)},default=json_util.default))
     	#return "my list of films!"
 
+@application.route("/setupSchema")
+def setupSchema():
+	#setup the connection
+	client = pymongo.MongoClient('mongodb://'+os.environ['MONGODB_USER']+':'+os.environ['MONGODB_PASSWORD']+'@'+os.environ['DATABASE_SERVICE_NAME']+'/'+os.environ['MONGODB_DATABASE'])
+        db = client[os.environ['MONGODB_DATABASE']]
+	db.["listFilms"].insert(post)
+ 	result = db.collection_names()
+
+        #query the DB for all the parkpoints
+        #result = db.parkpoints.find()
+ 
+	#Now turn the results into valid JSON
+        return str(json.dumps({'results':list(result)}))
+        #return str(json.dumps({'results':list(result)},default=json_util.default))
+    	#return "my list of films!"
 
 if __name__ == "__main__":
     application.run()
