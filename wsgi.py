@@ -32,7 +32,7 @@ def setupSchema():
 	#setup the connection
 	client = pymongo.MongoClient('mongodb://'+os.environ['MONGODB_USER']+':'+os.environ['MONGODB_PASSWORD']+'@'+os.environ['DATABASE_SERVICE_NAME']+'/'+os.environ['MONGODB_DATABASE'])
         db = client[os.environ['MONGODB_DATABASE']]
-	db.["listFilms"].insert(post)
+	db["listFilms"].insert(post)
  	result = db.collection_names()
 
         #query the DB for all the parkpoints
