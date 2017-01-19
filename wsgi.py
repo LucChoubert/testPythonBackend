@@ -43,7 +43,8 @@ def pushFilm():
     try:
         db = connectMongo()
         #print(request.get_data())
-        db["listFilms"].insert(request.json)
+        #print(json.loads(request.get_data()))
+        db["listFilms"].insert(json.loads(request.get_data()))
         return str(json.dumps({'result':'SUCCESS'}))+"\n"
     except Exception as e:
         print "Error caught"

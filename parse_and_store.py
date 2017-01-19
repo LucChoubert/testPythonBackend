@@ -1,6 +1,8 @@
 from lxml import etree
 from simplejson import JSONEncoder
-
+import requests
+import json
+import glob
 
 def dumpLeaf(leaf,n=0):
     for child in leaf:
@@ -40,7 +42,7 @@ def encodeLeaf(leaf,structure):
                     structure[child.tag]=new_structure
 
 def convert_MediaElchNFO_to_JSON(filename):
-    tree = etree.parse("CAPTAIN_PHILLIPS.nfo")
+    tree = etree.parse(filename)
     root = tree.getroot()
     #dumpLeaf(root)
     movie = {}
@@ -50,5 +52,13 @@ def convert_MediaElchNFO_to_JSON(filename):
 
 
 if __name__ == '__main__':
-    movie_json = convert_MediaElchNFO_to_JSON("CAPTAIN_PHILLIPS.nfo")
-    print(movie_json)
+    #url = 'http://testpythonbackend-testpython.44fs.preview.openshiftapps.com'
+    url = 'http://localhost:5000'
+    action = 'pushFilm'
+    #for f in glob.glob('/home/luc/Python/testPythonBackend/*.nfo'):
+    for f in glob.glob('./*.nfo'):
+        movie_json = convert_MediaElchNFO_to_JSON(f)
+        #print(movie_json)
+        response = requests.post(url+'/'+action, movie_json)
+        print("Importing "+json.loads(movie_json)['title']+" ---> "+response.json()['result'])
+    
