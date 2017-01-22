@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html ng-app="myFilmothequeGUI">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title> MyFilmotheque </title>
+
+<!-- Bootstrap -->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.css"-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+
+<!-- <script src="javascripts/angular.min.js"> </script>  -->
+<script src="javascripts/angular-locale_fr-fr.js"> </script>
+<script src="javascripts/myFilmothequeGUI.js"> </script>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="jquery/dist/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+
+<body ng-controller='myFilmothequeController'>
+
+<div class="container">
+  <div class="jumbotron">
+    <h1>{{'MyFilmothèque'}}</h1>
+    <p>{{'...generated '}} {{objectListFilms.generationDate | date:'medium'}}</p>
+  </div>
+
+<label class="control-label" for="searchText">Recherche:</label>
+<input type="text" class="input-medium search-query" ng-model="query">
+
+<div class="container">
+  <h2>Liste de films</h2>
+   <table class="table">
+    <thead>
+      <tr>
+        <th>Date de Rip</th>
+        <th>Nom de film</th>
+	<th>Pochette</th>
+       </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="film in objectListFilms._list | filter:query">
+      <td>{{film.adddate | date:'longDate'}}</td>
+      <td>
+        <a ng-click="getNFO(film.filename)" data-toggle="modal" data-target="#ModalNfo-{{$index}}">{{film.title | filmFilter}}
+        </a>
+
+          <!-- Modal -->
+          <div id="ModalNfo-{{$index}}" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">{{film.title}}</h4>
+                </div>
+                <div class="modal-body">
+                  <!--p>{{filmnfo}}</p-->
+                  <p>{{filmnfo.movie.title[0]}} - {{filmnfo.movie.originaltitle[0]}} - {{filmnfo.movie.genre[0]}} - {{filmnfo.movie.year[0]}}</p>
+                  <p>Synopsis:</p>
+                  <p>{{filmnfo.movie.plot[0]}}</p>
+                  <p>Acteurs:</p>
+                  <ul><li ng-repeat="actor in filmnfo.movie.actor">{{actor.name[0]}} joue {{actor.role[0]}}</li></ul>
+                  <!--a href="http://192.168.1.10:8080/filmnfo/{{film.filename}}" >NFO details</a-->
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+      </td>
+      <td>
+	      <img ng-src="http://127.0.0.1:8080/filmposter/{{film.filename}}" class="img-thumbnail" alt="{{film.title | filmFilter}}" WIDTH=64 HEIGHT=64 data-toggle="modal" data-target="#ModalPoster-{{$index}}" >
+
+          <!-- Modal -->
+          <div id="ModalPoster-{{$index}}" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">{{film.title}}</h4>
+                </div>
+                <div class="modal-body">
+                  <img ng-src="http://127.0.0.1:8080/filmposter/{{film.filename}}" class="img-thumbnail" alt="{{film.title | filmFilter}}" WIDTH=500 HEIGHT=500>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+          </div>
+
+      </td>
+      </tr>
+    </tbody>
+              </div>
+  </table>
+</div>
+
+</body>
+
+</html>
