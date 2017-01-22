@@ -1,7 +1,9 @@
 import os
+import pprint
 import pymongo
 import json
-from flask import Flask, request
+import flask
+#from flask import request, Response
 
 post = {"author": "Mike", "text": "My first blog post!"}
 
@@ -10,13 +12,41 @@ def connectMongo():
     #conn = pymongo.Connection()
     return client[os.environ['MONGODB_DATABASE']]
 
-application = Flask(__name__)
+def root_dir():  # pragma: no cover
+    return os.path.abspath(os.path.dirname(__file__))+"/static"
+
+
+def get_file(filename):  # pragma: no cover
+    try:
+        src = os.path.join(root_dir(), filename)
+        # Figure out how flask returns static files
+        # Tried:
+        # - render_template
+        # - send_file
+        # This should not be so non-obvious
+        return open(src).read()
+    except IOError as exc:
+        return str(exc)
+
+
+application = flask.Flask(__name__)
 
 @application.route("/")
 def hello():
-    return "Hello World testPythonBackend!"
+    output = "Welcome in testPythonBackend\n"
+    output += "===Machine & OS details===\n"
+    output += pprint.pformat(os.uname())+"\n"
+    output += "===ENVIRONMENT===\n"
+    output += pprint.pformat(os.environ)+"\n"
+    output += "===PYTHON ENVIRONMENT===\n"
+    output += "flask version: "+flask.__version__+"\n"
+    output += "\n"
+    return output
+#    return "Hello World testPythonBackend!"
 
 @application.route("/listFilms")
+#This one for bqckground compqtibility with the Node application
+@application.route("/listfilms")
 def listFilms():
     try:
         db = connectMongo()
@@ -42,9 +72,9 @@ def listFilms():
 def pushFilm():
     try:
         db = connectMongo()
-        #print(request.get_data())
-        #print(json.loads(request.get_data()))
-        db["listFilms"].insert(json.loads(request.get_data()))
+        #print(flask.request.get_data())
+        #print(json.loads(flask.request.get_data()))
+        db["listFilms"].insert(json.loads(flask.request.get_data()))
         return str(json.dumps({'result':'SUCCESS'}))+"\n"
     except Exception as e:
         print "Error caught"
@@ -79,6 +109,25 @@ def cleanSchema():
         print "Error caught"
         print(e)
         return str(json.dumps({'result':'ERROR'}))+"\n"
+
+#@application.route("/static/<path:path>")
+##@application.route("/static/javascripts/<path>")
+##@application.route("/static/jquery/dist/<path>")
+##@application.route("/static/bootstrap/dist/js/<path>")
+#def distributeStaticFile(path):
+#    mimetypes = {
+#        ".css": "text/css",
+#        ".html": "text/html",
+#        ".js": "application/javascript"
+#    }
+#    complete_path = os.path.join(root_dir(), path)
+#    extension = os.path.splitext(path)[1]
+#    mimetype = mimetypes.get(extension, "text/html")
+#    content = get_file(complete_path)
+#    print "distributing file: "+complete_path
+#    return flask.Response(content, mimetype=mimetype)
+
+
 
 if __name__ == "__main__":
     os.environ["MONGODB_ADMIN_PASSWORD"] = "ADMINpythonBackend"
