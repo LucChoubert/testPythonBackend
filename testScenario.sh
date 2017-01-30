@@ -1,6 +1,7 @@
 #To test en local
 # cd ~/Python/testPythonBackend
-#
+# Connect the local flask to the openshift mongo instance
+# oc port-forward mongodb-3-6jnu6  27017:27017
 # python wsgi.py 
 
 curl  http://localhost:5000

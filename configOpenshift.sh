@@ -11,6 +11,9 @@ oc new-project testpython --description="testpython" --display-name="testpython"
 oc project testpython
 
 oc new-app openshift/python:2.7~https://github.com/LucChoubert/testPythonBackend.git
+#oc new-app --strategy=source https://github.com/LucChoubert/testPythonBackend.git
+#oc new-app --image-stream=openshift/python:latest --code=https://github.com/LucChoubert/testPythonBackend.git
+
 oc new-app openshift/mongodb:3.2
 
 oc env dc testpythonbackend mongodb DATABASE_SERVICE_NAME=mongodb MONGODB_USER=pythonBackend MONGODB_PASSWORD=pythonBackend MONGODB_DATABASE=filmsDB MONGODB_ADMIN_PASSWORD=ADMINpythonBackend

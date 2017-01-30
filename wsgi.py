@@ -3,6 +3,9 @@ import pprint
 import pymongo
 import json
 import flask
+import datetime
+import bson
+from bson.json_util import loads
 #from flask import request, Response
 
 post = {"author": "Mike", "text": "My first blog post!"}
@@ -39,31 +42,53 @@ def hello():
     output += "===ENVIRONMENT===\n"
     output += pprint.pformat(os.environ)+"\n"
     output += "===PYTHON ENVIRONMENT===\n"
+#    output += "os version: "+os.__version__+"\n"
     output += "flask version: "+flask.__version__+"\n"
+#    output += "pprint version: "+pprint.__version__+"\n"
+    output += "pymongo version: "+pymongo.__version__+"\n"
+    output += "json version: "+json.__version__+"\n"
+#    output += "datetime version: "+datetime.__version__+"\n"
+#    output += "bson version: "+bson.__version__+"\n"
     output += "\n"
     return output
 #    return "Hello World testPythonBackend!"
 
 @application.route("/listFilms")
-#This one for bqckground compqtibility with the Node application
+#This one for background compatibility with the Node application
 @application.route("/listfilms")
 def listFilms():
+    outputObject={}
+    outputObject["generationDate"]=datetime.datetime.now().isoformat()
+    outputObject["_list"]=[]
     try:
         db = connectMongo()
         cursor = db["listFilms"].find()
         output = []
         for record in cursor:
-            output.append(record)
-        
+            #Log for debugging
+            #print(type(record))
+            #output.append(record)
+            data={}
+            objectid=record["_id"]
+            print(pprint.pformat(objectid))
+            record["_id"]=objectid
+            record["adddate"]=datetime.datetime.now().isoformat()
+            record["filename"]="TODO"
+            record["path"]="TODO"
+            record["size"]=0
+            #data["title"]=record["title"]
+            #data["title"]="MON SUPER FILM"
+            outputObject["_list"].append(record)
+        #Log for debugging
+        #print(output)
+            print(pprint.pformat(outputObject))
         #Now turn the results into valid JSON
-        print(output)
-        #return str(json.dumps({'results':list(output)}))+"\n"
-        return str(output)+"\n"
+        return json.dumps(outputObject)
+        #return str(output)+"\n"
     except Exception as e:
         print "Error caught"
         print(e)
         return str(json.dumps({'result':'ERROR'}))+"\n"
-
 
     #return str(json.dumps({'results':list(result)},default=json_util.default))
     #return "my list of films!"
@@ -80,7 +105,7 @@ def pushFilm():
         print "Error caught"
         print(e)
         return str(json.dumps({'result':'ERROR'}))+"\n"
-
+        
 
 @application.route("/setupSchema")
 def setupSchema():

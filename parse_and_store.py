@@ -52,7 +52,7 @@ def convert_MediaElchNFO_to_JSON(filename):
 
 
 if __name__ == '__main__':
-    #url = 'http://testpythonbackend-testpython.44fs.preview.openshiftapps.com'
+    url = 'http://testpythonbackend-testpython.44fs.preview.openshiftapps.com'
     url = 'http://localhost:5000'
     action = 'pushFilm'
     #for f in glob.glob('/home/luc/Python/testPythonBackend/*.nfo'):
